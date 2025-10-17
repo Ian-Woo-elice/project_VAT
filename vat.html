@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>부가세 계산기 · Glassmorphism</title>
+  <style>
+    :root{
+      --fg: #ffffff;
+      --fg-dim: rgba(255,255,255,0.85);
+      --fg-muted: rgba(255,255,255,0.5);
+      --glass-bg: rgba(255,255,255,0.12);
+      --glass-border: rgba(255,255,255,0.35);
+      --accent: #60a5fa;
+      --accent-2: #a78bfa;
+    }
+
+    body.light{
+      --fg: #1f2937;
+      --fg-dim: rgba(31,41,55,0.85);
+      --fg-muted: rgba(31,41,55,0.4);
+      --glass-bg: rgba(255,255,255,0.6);
+      --glass-border: rgba(0,0,0,0.1);
+      background: linear-gradient(135deg, #f9fafb, #e0e7ff);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      color: var(--fg);
+      background: radial-gradient(1200px 800px at 20% 20%, #0ea5e9 0%, rgba(14,165,233,0.2) 60%, transparent 70%),
+                  radial-gradient(900px 700px at 80% 30%, #6366f1 0%, rgba(99,102,241,0.15) 60%, transparent 70%),
+                  linear-gradient(180deg, #0b1220 0%, #0b1220 100%);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      padding: 8px;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--fg);
+      transition: background 0.3s;
+      line-height: 1;
+    }
+
+    .glass {
+      width: 100%;
+      max-width: 440px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 22px;
+      padding: 28px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      backdrop-filter: blur(14px) saturate(140%);
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    .title {
+      margin: 0 0 18px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: -0.01em;
+    }
+
+    .subtitle{ 
+      text-align:center; 
+      margin: -6px 0 20px; 
+      font-size: 12px; 
+      color: var(--fg-muted);
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--fg-dim);
+    }
+
+    .input-wrap{ position: relative; }
+
+    input[type="text"]{
+      width: 100%;
+      padding: 16px 48px 16px 16px;
+      font-size: 18px;
+      color: var(--fg);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      outline: none;
+      transition: box-shadow .2s, border-color .2s, background .2s;
+    }
+    input::placeholder{ color: var(--fg-muted); }
+    input:focus{
+      border-color: rgba(96,165,250,0.9);
+      box-shadow: 0 0 0 4px rgba(96,165,250,0.25);
+      background: rgba(255,255,255,0.12);
+    }
+
+    .won {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      font-weight: 700; font-size: 14px; color: var(--fg-muted);
+      pointer-events: none;
+    }
+
+    .results {
+      margin-top: 20px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 14px 16px;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 0;
+      color: var(--fg-dim);
+      font-size: 15px;
+    }
+
+    .row+.row { border-top: 1px dashed rgba(255,255,255,0.15); }
+
+    .value { font-weight: 700; color: var(--fg); letter-spacing: 0.2px; }
+
+    .total {
+      display: flex; justify-content: space-between; align-items: center; gap: 16px;
+      margin-top: 14px; padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      font-size: 18px; font-weight: 800; color: var(--fg);
+    }
+
+    .hint { margin-top: 10px; font-size: 12px; color: var(--fg-muted); text-align: right; }
+
+    .orb{ position: fixed; border-radius: 50%; filter: blur(40px); opacity: 0.45; pointer-events:none;}
+    .orb.one{ width: 220px; height: 220px; left: -60px; bottom: -40px; background: #22d3ee; }
+    .orb.two{ width: 280px; height: 280px; right: -80px; top: -60px; background: #a78bfa; }
+
+    .watermark {
+      position: fixed;
+      bottom: 10px;
+      right: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--fg-muted);
+      opacity: 0.3;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    @media (max-width: 480px){
+      .glass { padding: 22px; border-radius: 18px; }
+      .title { font-size: 20px; }
+      input[type="text"]{ font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle" id="themeToggle">🌙</button>
+  <div class="orb one"></div>
+  <div class="orb two"></div>
+
+  <main class="glass" role="region" aria-label="부가세 계산기">
+    <h1 class="title">부가세 계산기</h1>
+    <p class="subtitle">총액에서 <strong>공급가액</strong>과 <strong>부가세(10%)</strong>를 분리 계산합니다.</p>
+
+    <label for="total">총 금액</label>
+    <div class="input-wrap">
+      <input id="total" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 11,000" aria-describedby="calc-hint" />
+      <span class="won">원</span>
+    </div>
+
+    <section class="results" aria-live="polite">
+      <div class="row">
+        <span>공급가액</span>
+        <span id="supply" class="value">0 원</span>
+      </div>
+      <div class="row">
+        <span>부가세 (10%)</span>
+        <span id="vat" class="value">0 원</span>
+      </div>
+      <div class="total">
+        <span>총 금액</span>
+        <span id="sum" class="value">0 원</span>
+      </div>
+    </section>
+    <p id="calc-hint" class="hint">숫자만 입력하면 자동으로 천단위 구분과 계산이 적용됩니다.</p>
+  </main>
+
+  <div class="watermark">CXO 너구리</div>
+
+  <script>
+    const totalInput = document.getElementById("total");
+    const supplyEl = document.getElementById("supply");
+    const vatEl = document.getElementById("vat");
+    const sumEl = document.getElementById("sum");
+    const toggleBtn = document.getElementById("themeToggle");
+
+    function formatKRW(n){
+      return (n || 0).toLocaleString('ko-KR') + ' 원';
+    }
+
+    function update(){
+      const raw = (totalInput.value || '').replace(/[^\d]/g, '');
+      const total = raw ? parseInt(raw, 10) : 0;
+
+      totalInput.value = raw ? Number(raw).toLocaleString('ko-KR') : '';
+
+      const supply = Math.round(total / 1.1);
+      const vat = total - supply;
+
+      supplyEl.textContent = formatKRW(supply);
+      vatEl.textContent = formatKRW(vat);
+      sumEl.textContent = formatKRW(total);
+    }
+
+    totalInput.addEventListener('input', update);
+    update();
+
+    toggleBtn.addEventListener('click', ()=>{
+      document.body.classList.toggle('light');
+      toggleBtn.textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
+    });
+  </script>
+</body>
+</html>
