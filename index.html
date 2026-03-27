@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CXO Sales Tools</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0" rel="stylesheet">
+  <style>
+    /* ════════════════════════════════════════════
+       Toss Design Tokens
+    ════════════════════════════════════════════ */
+    :root {
+      --blue:        #3182F6;
+      --blue-dim:    #1C6EF2;
+      --blue-light:  #EBF3FF;
+      --blue-hover:  rgba(49,130,246,.08);
+
+      --bg:          #F2F4F6;
+      --surface:     #FFFFFF;
+      --surface-2:   #F8F9FA;
+      --hover:       #F2F4F6;
+
+      --text:        #191F28;
+      --text-2:      #8B95A1;
+      --text-3:      #B0B8C1;
+
+      --border:      #E5E8EB;
+      --divider:     #F2F4F6;
+
+      --green:       #00C73C;
+      --green-light: #E5F9EC;
+
+      --shadow: 0 8px 32px rgba(0,0,0,.08);
+
+      --r-sm:   8px;
+      --r-md:   14px;
+      --r-lg:   20px;
+      --r-xl:   24px;
+      --r-full: 9999px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --blue:        #4D95FF;
+        --blue-dim:    #6BABFF;
+        --blue-light:  rgba(77,149,255,.14);
+        --blue-hover:  rgba(77,149,255,.1);
+
+        --bg:          #131416;
+        --surface:     #1C1D1F;
+        --surface-2:   #27292D;
+        --hover:       #27292D;
+
+        --text:        #F2F4F6;
+        --text-2:      #6B7684;
+        --text-3:      #4E5968;
+
+        --border:      #2E3033;
+        --divider:     #27292D;
+
+        --green:       #2DB55D;
+        --green-light: rgba(0,199,60,.12);
+
+        --shadow: 0 8px 32px rgba(0,0,0,.28);
+      }
+    }
+
+    /* ════════════════════════════════════════════
+       Base
+    ════════════════════════════════════════════ */
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px 16px;
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      transition: background .3s, color .3s;
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      font-size: 20px;
+      line-height: 1;
+      user-select: none;
+      display: inline-flex;
+    }
+
+    /* ════════════════════════════════════════════
+       App Shell
+    ════════════════════════════════════════════ */
+    .app {
+      width: 100%;
+      max-width: 720px;
+      background: var(--surface);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ════════════════════════════════════════════
+       Header
+    ════════════════════════════════════════════ */
+    .app-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--divider);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface);
+    }
+    .header-logo {
+      width: 32px; height: 32px;
+      background: var(--blue);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .header-logo .material-symbols-outlined {
+      color: #fff;
+      font-size: 17px;
+      font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    }
+    .header-title {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -.4px;
+      color: var(--text);
+      flex: 1;
+    }
+    .header-badge {
+      font-size: 11px;
+      color: var(--text-2);
+      background: var(--bg);
+      padding: 3px 10px;
+      border-radius: var(--r-full);
+      font-weight: 700;
+      letter-spacing: -.1px;
+    }
+
+    /* ════════════════════════════════════════════
+       Navigation
+    ════════════════════════════════════════════ */
+    .app-body { display: flex; flex: 1; }
+
+    .sidebar {
+      width: 86px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--divider);
+      padding: 12px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      background: var(--surface);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      width: 74px;
+      padding: 10px 4px 8px;
+      border: none;
+      background: transparent;
+      border-radius: var(--r-md);
+      cursor: pointer;
+      font-family: inherit;
+      color: var(--text-2);
+      transition: background .15s, color .15s;
+    }
+    .nav-item:hover { background: var(--hover); }
+    .nav-item.active { color: var(--blue); background: var(--blue-light); }
+    .nav-item.active .material-symbols-outlined {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .nav-indicator {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px;
+    }
+    .nav-item .material-symbols-outlined { font-size: 22px; }
+    .nav-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: -.2px;
+      white-space: nowrap;
+    }
+
+    /* ════════════════════════════════════════════
+       Main Content
+    ════════════════════════════════════════════ */
+    .main-content { flex: 1; padding: 24px; min-width: 0; }
+
+    .tool-section        { display: none; }
+    .tool-section.active { display: block; }
+
+    .section-header { margin-bottom: 22px; }
+    .section-header h2 {
+      margin: 0 0 3px;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -.5px;
+    }
+    .section-header p {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-2);
+      letter-spacing: -.1px;
+    }
+
+    /* ════════════════════════════════════════════
+       Toggle (iOS-style sliding pill)
+    ════════════════════════════════════════════ */
+    .toggle-group {
+      display: flex;
+      background: var(--bg);
+      padding: 3px;
+      border-radius: var(--r-full);
+      margin-bottom: 22px;
+      position: relative;
+    }
+    .toggle-bg {
+      position: absolute;
+      top: 3px; left: 3px; bottom: 3px;
+      width: calc(50% - 3px);
+      background: var(--surface);
+      border-radius: var(--r-full);
+      box-shadow: 0 1px 4px rgba(0,0,0,.12), 0 0 0 .5px rgba(0,0,0,.04);
+      transition: transform .25s cubic-bezier(.4,0,.2,1);
+      z-index: 1;
+      pointer-events: none;
+    }
+    .toggle-btn {
+      flex: 1; z-index: 2;
+      border: none; background: transparent;
+      padding: 9px;
+      font-size: 13px; font-weight: 700;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: color .2s;
+      border-radius: var(--r-full);
+      font-family: inherit;
+      letter-spacing: -.2px;
+    }
+    .toggle-btn[aria-selected="true"] { color: var(--text); }
+
+    /* ════════════════════════════════════════════
+       Inputs
+    ════════════════════════════════════════════ */
+    .input-area { margin-bottom: 20px; }
+    .field-label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-2);
+      letter-spacing: -.1px;
+    }
+    .input-wrapper { position: relative; }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 15px 48px 15px 16px;
+      font-size: 26px;
+      font-weight: 800;
+      text-align: right;
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-md);
+      background: var(--surface);
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s;
+      letter-spacing: -.8px;
+      font-family: inherit;
+    }
+    input[type="text"]::placeholder { color: var(--text-3); opacity: 1; }
+    input[type="text"]:focus { border-color: var(--blue); border-width: 2px; }
+
+    .clear-btn {
+      position: absolute;
+      right: 12px; top: 50%;
+      transform: translateY(-50%);
+      background: var(--bg);
+      border: none; border-radius: var(--r-full);
+      width: 26px; height: 26px;
+      color: var(--text-2);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+      opacity: 0; pointer-events: none;
+    }
+    .clear-btn .material-symbols-outlined { font-size: 15px; }
+    .clear-btn.visible { opacity: 1; pointer-events: auto; }
+    .clear-btn:hover { background: var(--border); }
+
+    input[type="date"],
+    input[type="time"],
+    input[type="number"] {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-md);
+      background: var(--surface);
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s;
+      font-family: inherit;
+      letter-spacing: -.2px;
+    }
+    input[type="date"]:focus,
+    input[type="time"]:focus,
+    input[type="number"]:focus { border-color: var(--blue); border-width: 2px; }
+
+    input[type="number"] {
+      font-size: 26px; font-weight: 800;
+      padding: 14px 16px;
+      text-align: right; letter-spacing: -.8px;
+    }
+    input[type="number"]::placeholder { color: var(--text-3); opacity: 1; }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+    input[type="number"] { -moz-appearance: textfield; }
+
+    .date-row { display: flex; gap: 8px; align-items: flex-end; }
+    .date-field { flex: 1; }
+    .time-field { width: 110px; flex-shrink: 0; }
+    .time-field .field-label { visibility: hidden; }
+    .date-group { margin-bottom: 8px; }
+
+    .arrow-divider {
+      display: flex; justify-content: center;
+      color: var(--text-3);
+      margin: 8px 0 12px;
+    }
+
+    /* ════════════════════════════════════════════
+       Result Cards
+    ════════════════════════════════════════════ */
+    .result-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .result-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 8px 16px 18px;
+      border-radius: var(--r-md);
+      background: var(--bg);
+    }
+    .result-card.primary { background: var(--blue-light); }
+    .result-card.primary .value { color: var(--blue); font-size: 22px; }
+    .result-card.primary .label { color: var(--blue); opacity: .7; }
+    .result-card.primary .copy-btn { color: var(--blue); opacity: .7; }
+    .result-card.primary .copy-btn:hover { background: var(--blue-hover); opacity: 1; }
+
+    .label-box { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .label {
+      font-size: 11px;
+      color: var(--text-2);
+      font-weight: 700;
+      letter-spacing: -.1px;
+    }
+    .value {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      word-break: keep-all;
+      letter-spacing: -.5px;
+    }
+
+    /* ════════════════════════════════════════════
+       Copy Button
+    ════════════════════════════════════════════ */
+    .copy-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-2);
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s, color .15s;
+      flex-shrink: 0; margin-left: 4px;
+    }
+    .copy-btn .material-symbols-outlined { font-size: 18px; }
+    .copy-btn:hover { background: var(--hover); color: var(--blue); }
+    .copy-btn.copied { color: var(--green); }
+
+    /* ════════════════════════════════════════════
+       Template Section
+    ════════════════════════════════════════════ */
+    .tmpl-search-wrap { position: relative; margin-bottom: 14px; }
+    .tmpl-search-icon {
+      position: absolute;
+      left: 14px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-2);
+      pointer-events: none;
+    }
+    #tmpl-search {
+      width: 100%;
+      padding: 11px 16px 11px 44px;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: left;
+      letter-spacing: -.1px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-full);
+      background: var(--surface);
+      color: var(--text);
+      outline: none;
+      font-family: inherit;
+      transition: border-color .15s;
+    }
+    #tmpl-search:focus { border-color: var(--blue); border-width: 2px; }
+    #tmpl-search::placeholder { color: var(--text-3); opacity: 1; }
+
+    .tmpl-list { display: flex; flex-direction: column; gap: 4px; }
+
+    .tmpl-card {
+      border-radius: var(--r-md);
+      background: var(--bg);
+      overflow: hidden;
+      transition: background .12s;
+    }
+    .tmpl-card:hover { background: var(--hover); }
+    .tmpl-card.open  { background: var(--blue-light); }
+
+    .tmpl-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 15px 10px 15px 18px;
+      cursor: pointer; user-select: none;
+    }
+    .tmpl-title {
+      flex: 1;
+      font-size: 14px; font-weight: 700;
+      color: var(--text); letter-spacing: -.2px;
+    }
+    .tmpl-card.open .tmpl-title { color: var(--blue); }
+
+    .tmpl-chevron {
+      color: var(--text-2);
+      transition: transform .22s cubic-bezier(.4,0,.2,1);
+      display: flex; flex-shrink: 0;
+    }
+    .tmpl-card.open .tmpl-chevron { transform: rotate(180deg); color: var(--blue); }
+
+    .tmpl-body-wrap {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows .25s cubic-bezier(.4,0,.2,1);
+    }
+    .tmpl-card.open .tmpl-body-wrap { grid-template-rows: 1fr; }
+    .tmpl-body-inner { overflow: hidden; }
+    .tmpl-body-text {
+      padding: 0 18px 18px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(49,130,246,.15);
+      font-size: 13px;
+      line-height: 1.85;
+      color: var(--text-2);
+      white-space: pre-line;
+      letter-spacing: -.1px;
+      font-weight: 500;
+    }
+
+    .tmpl-empty {
+      text-align: center; color: var(--text-2);
+      font-size: 13px; padding: 40px 0;
+      font-weight: 700; letter-spacing: -.1px;
+    }
+
+    /* ════════════════════════════════════════════
+       Footer
+    ════════════════════════════════════════════ */
+    footer {
+      border-top: 1px solid var(--divider);
+      padding: 12px 24px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-3);
+      font-weight: 700;
+      letter-spacing: -.1px;
+    }
+
+    /* ════════════════════════════════════════════
+       Mobile
+    ════════════════════════════════════════════ */
+    @media (max-width: 560px) {
+      body { padding: 0; align-items: flex-start; }
+      .app { border-radius: 0; min-height: 100svh; max-width: 100%; box-shadow: none; }
+      .app-body { flex-direction: column; }
+      .sidebar {
+        width: 100%; flex-direction: row;
+        border-right: none; border-bottom: 1px solid var(--divider);
+        padding: 8px 10px; overflow-x: auto; gap: 4px; justify-content: flex-start;
+      }
+      .nav-item { flex-direction: row; width: auto; padding: 8px 14px 8px 10px; gap: 8px; }
+      .nav-indicator { width: 26px; height: 26px; }
+      .nav-label { font-size: 12px; white-space: nowrap; }
+      .main-content { padding: 20px 16px; }
+      .time-field { width: 96px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── Top App Bar ──────────────────────────── -->
+  <div class="app-header">
+    <div class="header-logo">
+      <span class="material-symbols-outlined">storefront</span>
+    </div>
+    <span class="header-title">CXO Sales Tools</span>
+    <span class="header-badge">CXO SQUAD</span>
+  </div>
+
+  <div class="app-body">
+
+    <!-- ── Navigation Rail ─────────────────────── -->
+    <nav class="sidebar">
+      <button class="nav-item active" onclick="switchTool('vat')" id="nav-vat">
+        <div class="nav-indicator">
+          <span class="material-symbols-outlined">calculate</span>
+        </div>
+        <span class="nav-label">VAT 계산</span>
+      </button>
+      <button class="nav-item" onclick="switchTool('bizday')" id="nav-bizday">
+        <div class="nav-indicator">
+          <span class="material-symbols-outlined">calendar_today</span>
+        </div>
+        <span class="nav-label">날짜 계산</span>
+      </button>
+      <button class="nav-item" onclick="switchTool('tmpl')" id="nav-tmpl">
+        <div class="nav-indicator">
+          <span class="material-symbols-outlined">article</span>
+        </div>
+        <span class="nav-label">템플릿</span>
+      </button>
+    </nav>
+
+    <!-- ── Main Content ─────────────────────────── -->
+    <main class="main-content">
+
+      <!-- ════ VAT Calculator ════════════════════ -->
+      <section class="tool-section active" id="tool-vat">
+        <div class="section-header">
+          <h2>VAT 계산기</h2>
+          <p>부가세 계산 (원단위 절사)</p>
+        </div>
+
+        <div class="toggle-group" role="tablist">
+          <div class="toggle-bg" id="vat-toggle-bg"></div>
+          <button class="toggle-btn" id="vat-btn-total"
+                  onclick="vatSwitchMode('total')" role="tab" aria-selected="true">합계 금액</button>
+          <button class="toggle-btn" id="vat-btn-supply"
+                  onclick="vatSwitchMode('supply')" role="tab" aria-selected="false">공급가액</button>
+        </div>
+
+        <div class="input-area">
+          <label class="field-label" id="vat-input-label" for="vat-amount">합계 금액 (부가세 포함)</label>
+          <div class="input-wrapper">
+            <input type="text" id="vat-amount" inputmode="numeric" placeholder="0" autocomplete="off">
+            <button class="clear-btn" id="vat-clear-btn" aria-label="지우기">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="result-list">
+          <div class="result-card" id="vat-card-supply">
+            <div class="label-box">
+              <span class="label">공급가액</span>
+              <span class="value" id="vat-val-supply">0</span>
+            </div>
+            <button class="copy-btn" onclick="copyById('vat-val-supply', this)" aria-label="복사">
+              <span class="material-symbols-outlined">content_copy</span>
+            </button>
+          </div>
+          <div class="result-card" id="vat-card-vat">
+            <div class="label-box">
+              <span class="label">부가세 (10%)</span>
+              <span class="value" id="vat-val-vat">0</span>
+            </div>
+            <button class="copy-btn" onclick="copyById('vat-val-vat', this)" aria-label="복사">
+              <span class="material-symbols-outlined">content_copy</span>
+            </button>
+          </div>
+          <div class="result-card primary" id="vat-card-total">
+            <div class="label-box">
+              <span class="label">합계 금액</span>
+              <span class="value" id="vat-val-total">0</span>
+            </div>
+            <button class="copy-btn" onclick="copyById('vat-val-total', this)" aria-label="복사">
+              <span class="material-symbols-outlined">content_copy</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════ Date Calculator ══════════════════ -->
+      <section class="tool-section" id="tool-bizday">
+        <div class="section-header">
+          <h2>날짜 계산기</h2>
+          <p>날짜 더하기 및 기간/시간 계산</p>
+        </div>
+
+        <div class="toggle-group" role="tablist">
+          <div class="toggle-bg" id="biz-toggle-bg"></div>
+          <button class="toggle-btn" id="biz-btn-after"
+                  onclick="bizSwitchMode('after')" role="tab" aria-selected="true">N일 후 날짜</button>
+          <button class="toggle-btn" id="biz-btn-period"
+                  onclick="bizSwitchMode('period')" role="tab" aria-selected="false">기간 계산</button>
+        </div>
+
+        <!-- Mode A: N일 후 -->
+        <div id="biz-after-section">
+          <div class="input-area" style="margin-bottom:16px;">
+            <label class="field-label" for="biz-start-date">시작일</label>
+            <input type="date" id="biz-start-date" oninput="bizCalcAfter()">
+          </div>
+          <div class="input-area">
+            <label class="field-label" for="biz-days-input">일 수</label>
+            <div class="input-wrapper">
+              <input type="number" id="biz-days-input" placeholder="0" min="1" max="999"
+                     oninput="bizCalcAfter()">
+            </div>
+          </div>
+          <div class="result-list">
+            <div class="result-card primary">
+              <div class="label-box">
+                <span class="label">N일 후</span>
+                <span class="value" id="biz-after-result">—</span>
+              </div>
+              <button class="copy-btn"
+                      onclick="copyText(document.getElementById('biz-after-result').textContent, this)"
+                      aria-label="복사">
+                <span class="material-symbols-outlined">content_copy</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode B: 기간 계산 -->
+        <div id="biz-period-section" style="display:none;">
+          <div class="date-group">
+            <div class="date-row">
+              <div class="date-field">
+                <label class="field-label" for="biz-p-start-date">시작일시</label>
+                <input type="date" id="biz-p-start-date" oninput="bizCalcPeriod()">
+              </div>
+              <div class="time-field">
+                <label class="field-label">시간 (선택)</label>
+                <input type="time" id="biz-p-start-time" oninput="bizCalcPeriod()">
+              </div>
+            </div>
+          </div>
+          <div class="arrow-divider">
+            <span class="material-symbols-outlined">arrow_downward</span>
+          </div>
+          <div class="date-group" style="margin-bottom:20px;">
+            <div class="date-row">
+              <div class="date-field">
+                <label class="field-label" for="biz-p-end-date">종료일시</label>
+                <input type="date" id="biz-p-end-date" oninput="bizCalcPeriod()">
+              </div>
+              <div class="time-field">
+                <label class="field-label">시간 (선택)</label>
+                <input type="time" id="biz-p-end-time" oninput="bizCalcPeriod()">
+              </div>
+            </div>
+          </div>
+          <div class="result-list">
+            <div class="result-card primary">
+              <div class="label-box">
+                <span class="label">기간</span>
+                <span class="value" id="biz-period-result">—</span>
+              </div>
+              <button class="copy-btn"
+                      onclick="copyText(document.getElementById('biz-period-result').textContent, this)"
+                      aria-label="복사">
+                <span class="material-symbols-outlined">content_copy</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════ Template Library ══════════════════ -->
+      <section class="tool-section" id="tool-tmpl">
+        <div class="section-header">
+          <h2>설명 템플릿</h2>
+          <p>견적서 · 거래명세서 설명란 복사</p>
+        </div>
+        <div class="tmpl-search-wrap">
+          <span class="material-symbols-outlined tmpl-search-icon">search</span>
+          <input class="tmpl-search" type="text" id="tmpl-search"
+                 placeholder="제목 또는 내용으로 검색..."
+                 oninput="tmplFilter(this.value)" autocomplete="off">
+        </div>
+        <div class="tmpl-list" id="tmpl-list"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer>세일즈 시 필요한 도구가 있는 경우, 편하게 말씀해 주세요.</footer>
+</div>
+
+<script src="templates.js"></script>
+<script>
+
+// ════════════════════════════════════════════
+// Template rendering
+// ════════════════════════════════════════════
+const COPY_ICON  = `<span class="material-symbols-outlined">content_copy</span>`;
+const CHECK_ICON = `<span class="material-symbols-outlined">check</span>`;
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+let _tmplFiltered = TEMPLATES;
+
+function tmplRender(list) {
+  _tmplFiltered = list;
+  const el = document.getElementById('tmpl-list');
+  if (!list.length) {
+    el.innerHTML = '<div class="tmpl-empty">검색 결과가 없어요</div>';
+    return;
+  }
+  el.innerHTML = list.map((t, i) => `
+    <div class="tmpl-card" id="tmpl-card-${i}">
+      <div class="tmpl-header" onclick="tmplToggle(${i})">
+        <div class="tmpl-title">${escHtml(t.title)}</div>
+        <span class="tmpl-chevron"><span class="material-symbols-outlined">expand_more</span></span>
+        <button class="copy-btn" onclick="event.stopPropagation();tmplCopy(${i},this)" aria-label="복사">
+          ${COPY_ICON}
+        </button>
+      </div>
+      <div class="tmpl-body-wrap">
+        <div class="tmpl-body-inner">
+          <div class="tmpl-body-text">${escHtml(t.text)}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function tmplToggle(idx) {
+  document.getElementById(`tmpl-card-${idx}`).classList.toggle('open');
+}
+
+function tmplFilter(q) {
+  const lower = q.toLowerCase();
+  tmplRender(TEMPLATES.filter(t =>
+    t.title.toLowerCase().includes(lower) ||
+    t.text.toLowerCase().includes(lower)
+  ));
+}
+
+async function tmplCopy(idx, btn) {
+  await copyText(_tmplFiltered[idx].text, btn);
+}
+
+// ════════════════════════════════════════════
+// Navigation
+// ════════════════════════════════════════════
+function switchTool(tool) {
+  document.querySelectorAll('.tool-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tool-' + tool).classList.add('active');
+  document.getElementById('nav-' + tool).classList.add('active');
+}
+
+// ════════════════════════════════════════════
+// Copy utilities
+// ════════════════════════════════════════════
+async function copyById(id, btn) {
+  const text = document.getElementById(id).textContent.replace(/,/g, '');
+  if (!text || text === '0' || text === '—') return;
+  await copyText(text, btn);
+}
+
+async function copyText(text, btn) {
+  if (!text || text === '—') return;
+  try {
+    await navigator.clipboard.writeText(text);
+    btn.classList.add('copied');
+    btn.innerHTML = CHECK_ICON;
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = COPY_ICON; }, 1500);
+  } catch (e) { console.error('Copy failed', e); }
+}
+
+// ════════════════════════════════════════════
+// VAT Calculator
+// ════════════════════════════════════════════
+let vatMode = 'total';
+const vatInput    = document.getElementById('vat-amount');
+const vatClearBtn = document.getElementById('vat-clear-btn');
+
+function vatSwitchMode(newMode) {
+  vatMode = newMode;
+  const isTotal = vatMode === 'total';
+  document.getElementById('vat-btn-total').setAttribute('aria-selected', isTotal);
+  document.getElementById('vat-btn-supply').setAttribute('aria-selected', !isTotal);
+  document.getElementById('vat-toggle-bg').style.transform = isTotal ? '' : 'translateX(100%)';
+  document.getElementById('vat-input-label').textContent =
+    isTotal ? '합계 금액 (부가세 포함)' : '공급가액 (부가세 별도)';
+  document.getElementById('vat-card-total').classList.toggle('primary',   isTotal);
+  document.getElementById('vat-card-supply').classList.toggle('primary', !isTotal);
+  vatCalculate();
+}
+
+vatInput.addEventListener('input', function () {
+  const rawValue = this.value.replace(/,/g, '');
+  const cursor = this.selectionStart;
+  const origText = this.value;
+  let digitsBeforeCursor = 0;
+  for (let i = 0; i < cursor; i++) {
+    if (/\d/.test(origText[i])) digitsBeforeCursor++;
+  }
+  if (!rawValue) {
+    this.value = '';
+    vatClearBtn.classList.remove('visible');
+    vatCalculate();
+    return;
+  }
+  const formatted = parseInt(rawValue, 10).toLocaleString('ko-KR');
+  this.value = formatted;
+  let newPos = 0, found = 0;
+  for (let i = 0; i < formatted.length; i++) {
+    if (/\d/.test(formatted[i])) found++;
+    if (found >= digitsBeforeCursor) { newPos = i + 1; break; }
+  }
+  if (rawValue.length > 0 && digitsBeforeCursor === 0) newPos = 0;
+  this.setSelectionRange(newPos, newPos);
+  vatClearBtn.classList.add('visible');
+  vatCalculate();
+});
+
+vatClearBtn.addEventListener('click', () => {
+  vatInput.value = '';
+  vatInput.focus();
+  vatClearBtn.classList.remove('visible');
+  vatCalculate();
+});
+
+function vatCalculate() {
+  const num = parseInt(vatInput.value.replace(/,/g, '') || '0', 10);
+  let supply = 0, vat = 0, total = 0;
+  if (num > 0) {
+    if (vatMode === 'total') {
+      supply = Math.floor(num / 1.1);
+      vat    = num - supply;
+      total  = num;
+    } else {
+      supply = num;
+      vat    = Math.floor(num * 0.1);
+      total  = supply + vat;
+    }
+  }
+  document.getElementById('vat-val-supply').textContent = supply.toLocaleString('ko-KR');
+  document.getElementById('vat-val-vat').textContent    = vat.toLocaleString('ko-KR');
+  document.getElementById('vat-val-total').textContent  = total.toLocaleString('ko-KR');
+}
+
+// ════════════════════════════════════════════
+// Date Calculator
+// ════════════════════════════════════════════
+function formatDate(date) {
+  const DOW = ['일','월','화','수','목','금','토'];
+  return `${date.getFullYear()}년 ${date.getMonth()+1}월 ${date.getDate()}일 (${DOW[date.getDay()]})`;
+}
+
+let bizMode = 'after';
+
+function bizSwitchMode(newMode) {
+  bizMode = newMode;
+  const isAfter = bizMode === 'after';
+  document.getElementById('biz-btn-after').setAttribute('aria-selected', isAfter);
+  document.getElementById('biz-btn-period').setAttribute('aria-selected', !isAfter);
+  document.getElementById('biz-toggle-bg').style.transform = isAfter ? '' : 'translateX(100%)';
+  document.getElementById('biz-after-section').style.display  = isAfter ? 'block' : 'none';
+  document.getElementById('biz-period-section').style.display = isAfter ? 'none'  : 'block';
+}
+
+function bizCalcAfter() {
+  const dateVal  = document.getElementById('biz-start-date').value;
+  const daysVal  = parseInt(document.getElementById('biz-days-input').value, 10);
+  const resultEl = document.getElementById('biz-after-result');
+  if (!dateVal || !daysVal || daysVal < 1) { resultEl.textContent = '—'; return; }
+  const [y, m, d] = dateVal.split('-').map(Number);
+  resultEl.textContent = formatDate(new Date(y, m - 1, d + daysVal));
+}
+
+function bizCalcPeriod() {
+  const startDateVal = document.getElementById('biz-p-start-date').value;
+  const startTimeVal = document.getElementById('biz-p-start-time').value;
+  const endDateVal   = document.getElementById('biz-p-end-date').value;
+  const endTimeVal   = document.getElementById('biz-p-end-time').value;
+  const resultEl     = document.getElementById('biz-period-result');
+
+  if (!startDateVal || !endDateVal) { resultEl.textContent = '—'; return; }
+
+  const [sy, sm, sd] = startDateVal.split('-').map(Number);
+  const [sh, smi]    = startTimeVal ? startTimeVal.split(':').map(Number) : [0, 0];
+  const startDT = new Date(sy, sm - 1, sd, sh, smi, 0);
+
+  const [ey, em, ed] = endDateVal.split('-').map(Number);
+  const [eh, emi]    = endTimeVal ? endTimeVal.split(':').map(Number) : [0, 0];
+  const endDT = new Date(ey, em - 1, ed, eh, emi, 0);
+
+  if (endDT <= startDT) { resultEl.textContent = '종료일시가 시작일시보다 늦어야 합니다'; return; }
+
+  const totalMs    = endDT - startDT;
+  const totalDays  = Math.floor(totalMs / 86_400_000);
+  const totalHours = Math.floor(totalMs / 3_600_000);
+  resultEl.textContent = `${totalDays}일 (${totalHours.toLocaleString('ko-KR')} 시간)`;
+}
+
+// ════════════════════════════════════════════
+// Init
+// ════════════════════════════════════════════
+(function init() {
+  const today = new Date();
+  const y = today.getFullYear();
+  const m = String(today.getMonth() + 1).padStart(2, '0');
+  const d = String(today.getDate()).padStart(2, '0');
+  const todayStr = `${y}-${m}-${d}`;
+  document.getElementById('biz-start-date').value   = todayStr;
+  document.getElementById('biz-p-start-date').value = todayStr;
+  tmplRender(TEMPLATES);
+})();
+</script>
+
+</body>
+</html>
